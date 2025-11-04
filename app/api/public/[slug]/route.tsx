@@ -8,7 +8,7 @@ export async function GET(
     { params }: { params: { slug: string } }
 ) {
     try {
-        const { slug } = params;
+        const { slug } = await params;
         const company = await prisma.company.findUnique({
             where: { slug },
             include: {

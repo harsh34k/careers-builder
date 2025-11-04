@@ -15,6 +15,8 @@ export async function POST(req: Request) {
                 email
             }
         })
+        console.log("user", user);
+
         if (!user) return NextResponse.json({ error: "User does not exists" }, { status: 404 })
         const comparePass = await bcrypt.compare(password, user.password)
         if (!comparePass) return NextResponse.json({ error: "Invalid credentials" }, { status: 400 });
