@@ -142,7 +142,7 @@ export default function JobDetailsPage({ params }: any) {
                     </div>
                 </div>
 
-                {/* Apply Button */}
+
                 <div className="text-center mt-12">
                     <button
                         className="px-8 py-3 bg-blue-600 text-white rounded-lg text-lg font-medium hover:bg-blue-700 transition"

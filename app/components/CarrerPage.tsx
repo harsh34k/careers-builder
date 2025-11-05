@@ -257,7 +257,7 @@ export default function CareersPage({ params }: any) {
                                 className="py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
                             >
                                 <div>
-                                    <a href={`/${slug}/careers/job/${job.id}`}>
+                                    <a href={`/public/${slug}/${job.id}`}>
                                         <h3
                                             className="text-lg font-semibold hover:underline"
                                             style={{ color: themeColor }}

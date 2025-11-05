@@ -1,6 +1,6 @@
 "use client";
-
 import { useState } from "react";
+import { Pencil } from "lucide-react"; // If you're using lucide-react. If not, replace with emoji.
 
 export default function EditableSelectField({
     job,
@@ -14,21 +14,20 @@ export default function EditableSelectField({
     onSave: (jobId: string, field: string, value: string) => void;
 }) {
     const [isEditing, setIsEditing] = useState(false);
-
     const value = job[field];
-    console.log("value", value);
-
 
     return (
-        <div className="flex items-center gap-2">
+        <div className="relative inline-block">
             {isEditing ? (
                 <select
-                    className="border px-2 py-1 rounded"
+                    autoFocus
+                    className="border px-2 py-1 rounded-md bg-white shadow-sm focus:ring-2 focus:ring-blue-500"
                     value={value}
                     onChange={(e) => {
                         onSave(job.id, field, e.target.value);
                         setIsEditing(false);
                     }}
+                    onBlur={() => setIsEditing(false)}
                 >
                     {options.map((opt) => (
                         <option key={opt} value={opt}>
@@ -37,16 +36,15 @@ export default function EditableSelectField({
                     ))}
                 </select>
             ) : (
-                <span className="border px-2 py-1 rounded">{value}</span>
+                <button
+                    onClick={() => setIsEditing(true)}
+                    className="flex items-center gap-1 pr-2 pl-3 py-1 border rounded-md bg-gray-50 hover:bg-gray-100 transition text-sm"
+                >
+                    <span>{value}</span>
+                    <Pencil size={14} className="text-gray-400 hover:text-gray-600 transition" />
+
+                </button>
             )}
-            {/* {isEditing ?} */}
-            {/* <span className="border px-2 py-1 rounded">{value}</span> */}
-            <button
-                onClick={() => setIsEditing(!isEditing)}
-                className="text-gray-400 hover:text-gray-600"
-            >
-                ✏️
-            </button>
         </div>
     );
 }

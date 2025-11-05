@@ -18,6 +18,7 @@ import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import dynamic from "next/dynamic";
 import EditableSelectField from "../components/EditableSelectField";
 import CompanyModal from "../components/CompanyModal";
+import { Trash2 } from "lucide-react";
 const SectionEditor = dynamic(() => import("../components/SectionEditor"), {
     ssr: false,
 });
@@ -36,6 +37,7 @@ export default function Dashboard() {
     const [showJobForm, setShowJobForm] = useState(false);
     const [showCompanyModal, setShowCompanyModal] = useState(false);
     const [loadingUser, setLoadingUser] = useState(true);
+    const [isPublished, setIsPublished] = useState(false);
 
 
 
@@ -59,6 +61,7 @@ export default function Dashboard() {
             try {
                 const res = await axios.post("/api/me");
                 setUser(res.data.user);
+                setIsPublished(res.data?.user?.company?.isPublished)
                 console.log("user company", res.data);
 
                 if (res.data.user.company && !(res.data.user.company == null)) {
@@ -101,13 +104,31 @@ export default function Dashboard() {
         fetchJobs();
     }, [company]);
 
+
     const handleCreateJob = async () => {
         const res = await axios.post("/api/job", newJob);
         setJobs([...jobs, res.data.job]);
         setNewJob({ title: "", description: "", location: "", employment_type: "", experience_level: "", job_type: "", salary_range: "", work_policy: "", department: "" });
         setShowJobForm(false)
     };
+    const handlePublishChange = async () => {
+        try {
+            const res = await axios.patch("/api/company", {
+                isPublished: !(company.isPublished),
+            });
 
+            // Update state with new company
+            console.log("res.data.", res.data);
+
+            setCompany(res.data.company);
+            setIsPublished(res.data.company.isPublished)
+            alert(`Company is now ${res.data.company.isPublished ? "Published" : "Unpublished"} `);
+
+        } catch (error) {
+            console.error(error);
+            alert("Error updating publish status");
+        }
+    };
     const handleUpdateJob = async (id: string, key: string, value: string) => {
         const updated = jobs.map(j => j.id === id ? { ...j, [key]: value } : j);
         setJobs(updated);
@@ -272,11 +293,11 @@ export default function Dashboard() {
                             {/* Company Title */}
                             <div className="text-center mb-4 mt-2">
                                 <h1 className="text-xl font-semibold">{company.name}</h1>
-                                <p className="text-gray-500 text-sm">/{company.slug}</p>
+
                             </div>
 
                             {/* Edit Details Button */}
-                            <div className="flex justify-center mb-4">
+                            <div className="flex justify-end mb-4 mx-7">
                                 <Dialog open={editOpen} onOpenChange={setEditOpen}>
                                     <DialogTrigger asChild>
                                         <Button variant="outline" className="text-sm">
@@ -285,7 +306,7 @@ export default function Dashboard() {
                                     </DialogTrigger>
                                     <DialogContent>
                                         <DialogHeader>
-                                            <DialogTitle>Edit Company Details</DialogTitle>
+                                            <DialogTitle className="ali">Edit Company Details</DialogTitle>
                                             <DialogDescription>
                                                 Update your company name, slug, or theme color below.
                                             </DialogDescription>
@@ -319,6 +340,7 @@ export default function Dashboard() {
                                                     onChange={(e) => setThemeColor(e.target.value)}
                                                     className="h-10 w-20"
                                                 />
+                                                <p className="text-gray-400 text-sm">Theme will be used as you primary color i.e Heading color, Button color etc</p>
                                             </div>
                                         </div>
                                         <DialogFooter>
@@ -334,6 +356,20 @@ export default function Dashboard() {
                                 <Button variant="secondary" onClick={() => router.push(`/preview/${editSlug}`)}>
                                     Preview
                                 </Button>
+                                <Button variant="secondary" onClick={handlePublishChange}>
+                                    {isPublished ? "UnPublish" : "Publish"}
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    onClick={() => {
+                                        const publicUrl = `${window.location.origin}/public/${company.slug}`;
+                                        navigator.clipboard.writeText(publicUrl);
+                                        alert("Public link copied ✅");
+                                    }}
+                                >
+                                    Copy Public Link
+                                </Button>
+
                             </div>
                             {/* Sections Builder */}
                             <DragDropContext onDragEnd={handleDragEnd}>
@@ -361,12 +397,19 @@ export default function Dashboard() {
                                                             </div>
 
                                                             {/* Delete Button */}
-                                                            <button
+                                                            {/* <button
                                                                 onClick={() => handleDelete(section.id)}
                                                                 className="absolute top-2 right-2 p-1 rounded hover:bg-red-100 text-red-500 text-sm opacity-70 hover:opacity-100"
                                                                 title="Delete Section"
                                                             >
                                                                 🗑️
+                                                            </button> */}
+                                                            <button
+                                                                onClick={() => handleDelete(section.id)}
+                                                                className="absolute top-2 right-2 p-1  rounded-md hover:bg-red-100 text-red-500 transition"
+                                                                title="Delete Section"
+                                                            >
+                                                                <Trash2 size={18} />
                                                             </button>
 
                                                             {/* Title */}
@@ -587,9 +630,14 @@ export default function Dashboard() {
 
                                             </div>
 
-                                            <Button variant="destructive" onClick={() => handleDeleteJob(job.id)}>
-                                                Delete
-                                            </Button>
+                                            <button
+                                                onClick={() => handleDeleteJob(job.id)}
+                                                className="p-2 rounded-md hover:bg-red-100 text-red-500 transition"
+                                                title="Delete Job"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+
                                         </div>
                                     ))}
                                 </div>
