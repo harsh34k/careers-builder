@@ -1,8 +1,8 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import verifyJWT from "@/lib/jwt";
-import { PrismaClient } from "../../generated/prisma/client"
-import CareersPage from "@/app/components/CarrerPage";
+import { PrismaClient } from "../../../generated/prisma/client"
+import JobDetailsPage from "@/app/components/JobDetails";
 const prisma = new PrismaClient();
 
 export default async function PreviewPage({ params }: any) {
@@ -24,5 +24,5 @@ export default async function PreviewPage({ params }: any) {
         redirect(`/preview/${user.company.slug}`);
     }
 
-    return <CareersPage params={params} />;
+    return <JobDetailsPage params={params} />;
 }

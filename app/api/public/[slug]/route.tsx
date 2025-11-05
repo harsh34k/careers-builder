@@ -40,7 +40,12 @@ export async function GET(
                 title: job.title,
                 description: job.description,
                 location: job.location,
-                jobType: job.jobType,
+                work_policy: job.work_policy,
+                employment_type: job.employment_type,
+                department: job.department,
+                experience_level: job.experience_level,
+                job_type: job.job_type,
+                salary_range: job.salary_range,
                 createdAt: job.createdAt,
             })),
         };

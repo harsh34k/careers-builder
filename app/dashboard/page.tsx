@@ -1,139 +1,3 @@
-// "use client";
-// import { useEffect, useState } from "react";
-// import CompanyModal from "../components/CompanyModal";
-// import CompanyForm from "../components/CompanyForm";
-// import axios from "axios";
-// import Sidebar from "../components/Sidebar";
-// import CompanyInfoTab from "../components/CompanyInfoTab";
-// import BrandSettingsTab from "../components/BrandSettingsTab";
-// import SectionsBuilderTab from "../components/SectionsBuilderTab";
-// import PreviewTab from "../components/PreviewTab";
-// import PublishTab from "../components/PublishTab";
-// import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-// import { Button } from "@/components/ui/button";
-// import { Input } from "@/components/ui/input";
-// import { Label } from "@/components/ui/label";
-
-// export default function Dashboard() {
-//     const [user, setUser] = useState<any>(null);
-//     const [company, setCompany] = useState<any>(null);
-//     const [showModal, setShowModal] = useState(false);
-//     const [activeTab, setActiveTab] = useState("info")
-//     const [isPreviewOpen, setIsPreviewOpen] = useState(false)
-//     const [sections, setSections] = useState(company?.sections || []);
-
-//     useEffect(() => {
-//         const fetchData = async () => {
-//             try {
-//                 const res = await axios.post("/api/me");
-//                 setUser(res.data.user);
-//                 if (res.data.user.company) {
-//                     setCompany(res.data.user.company);
-//                 } else {
-//                     setShowModal(true);
-//                 }
-//             } catch {
-//                 window.location.href = "/login";
-//             }
-//         };
-//         fetchData();
-//     }, []);
-//     const handleAdd = () => {
-//         setSections([...sections, { id: Date.now().toString(), title: "", content: "" }]);
-//     };
-
-//     const handleChange = (id: string, key: string, value: string) => {
-//         setSections(sections.map((s: any) => (s.id === id ? { ...s, [key]: value } : s)));
-//     };
-
-//     const handleDelete = (id: string) => {
-//         setSections(sections.filter((s: any) => s.id !== id));
-//     };
-
-//     const handleSave = async () => {
-//         const data = await axios.patch("/api/company", { sections })
-//         setCompany(data.data.company);
-//         alert("Sections updated ✅");
-//     }
-
-//     if (!user) return <div>Loading...</div>;
-
-//     return (
-//         <div className="flex w-full h-screen">
-//             {/* MAIN SECTION */}
-//             <div
-//                 className={`transition-all duration-300 ${isPreviewOpen ? "w-1/2" : "w-full"
-//                     } p-4 bg-white flex flex-col items-center mx-20 h-screen`}
-//             >
-//                 <div className={`${isPreviewOpen ? "w-full" : "w-1/2 border-2 border-gray-400"
-//                     }`} >
-//                     <div>
-//                         <div className="h-40 border-2 border-blue-600">cover image here</div>
-//                         <div className="h-28 w-28 border-2 rounded-full  border-blue-600">logo rounded inside this</div>
-//                     </div>
-//                     <div>
-//                         <Dialog>
-//                             <DialogTrigger asChild>
-//                                 <Button variant="outline">Save theme</Button>
-//                             </DialogTrigger>
-//                             <DialogContent>
-//                                 <DialogHeader>
-//                                     <DialogTitle>Save your system theme</DialogTitle>
-//                                 </DialogHeader>
-//                                 <div className="grid gap-4">
-//                                     <div className="grid gap-3">
-//                                         <Label htmlFor="name-1">Pick a Primary Color</Label>
-//                                         <Input type="color" id="name-1" name="name" />
-//                                     </div>
-
-//                                 </div>
-//                                 <DialogFooter>
-//                                     <DialogClose asChild>
-//                                         <Button variant="outline">Cancel</Button>
-//                                     </DialogClose>
-//                                     <Button type="submit">Save changes</Button>
-//                                 </DialogFooter>
-//                             </DialogContent>
-
-//                         </Dialog>
-//                     </div>
-//                     {/* add sections */}
-//                     <div>
-//                         {sections?.map((section: any) => (
-//                             <div key={section.id} className="border p-3 mb-3 rounded bg-white">
-//                                 <input
-//                                     placeholder="Section Title"
-//                                     value={section.title}
-//                                     onChange={(e) => handleChange(section.id, "title", e.target.value)}
-//                                     className="border p-2 w-full mb-2"
-//                                 />
-//                                 <textarea
-//                                     placeholder="Section Content"
-//                                     value={section.content}
-//                                     onChange={(e) => handleChange(section.id, "content", e.target.value)}
-//                                     className="border p-2 w-full"
-//                                 />
-//                                 <button onClick={() => handleDelete(section.id)} className="text-red-500 mt-2">Delete</button>
-//                             </div>
-//                         ))}
-//                         <button onClick={handleAdd} className="bg-gray-200 px-4 py-2 rounded mr-2">+ Add Section</button>
-//                         <button onClick={handleSave} className="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
-//                     </div>
-
-//                 </div>
-//             </div>
-
-//             {/* SIDEBAR */}
-//             {isPreviewOpen && (
-//                 <div className="w-1/2 border-l-2 border-gray-400 p-4 bg-gray-50">
-//                     <h2 className="text-lg font-semibold mb-2">Sidebar</h2>
-//                     <p className="text-gray-600">here we would show preview</p>
-//                 </div>
-//             )}
-//         </div>
-//     );
-// }
-
 "use client";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -149,13 +13,17 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import dynamic from "next/dynamic";
+import EditableSelectField from "../components/EditableSelectField";
+import CompanyModal from "../components/CompanyModal";
 const SectionEditor = dynamic(() => import("../components/SectionEditor"), {
     ssr: false,
 });
 
 axios.defaults.withCredentials = true;
+
 
 export default function Dashboard() {
     const [user, setUser] = useState<any>(null);
@@ -165,6 +33,11 @@ export default function Dashboard() {
     const [logo, setLogo] = useState<string | null>(null);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
     const [themeColor, setThemeColor] = useState("#2563eb");
+    const [showJobForm, setShowJobForm] = useState(false);
+    const [showCompanyModal, setShowCompanyModal] = useState(false);
+    const [loadingUser, setLoadingUser] = useState(true);
+
+
 
     // Dialog form
     const [editOpen, setEditOpen] = useState(false);
@@ -172,8 +45,15 @@ export default function Dashboard() {
     const [editSlug, setEditSlug] = useState("");
 
     const [jobs, setJobs] = useState<any[]>([]);
-    const [newJob, setNewJob] = useState({ title: "", description: "", location: "", jobType: "" });
+    const [newJob, setNewJob] = useState({ title: "", description: "", location: "", employment_type: "", experience_level: "", job_type: "", salary_range: "", work_policy: "", department: "" });
 
+    const JOB_TYPE_OPTIONS = ["PERMANENT", "TEMPORARY", "INTERNSHIP"];
+    const WORK_POLICY_OPTIONS = ["ONSITE", "HYBRID", "REMOTE"];
+    const EMPLOYMENT_TYPE_OPTIONS = ["FULLTIME", "PARTTIME", "CONTRACT"];
+    const EXPERIENCE_LEVEL_OPTIONS = ["SENIOR", "MIDLEVEL", "JUNIOR"];
+
+
+    const router = useRouter()
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -181,7 +61,7 @@ export default function Dashboard() {
                 setUser(res.data.user);
                 console.log("user company", res.data);
 
-                if (res.data.user.company) {
+                if (res.data.user.company && !(res.data.user.company == null)) {
                     const c = res.data.user.company;
                     setCompany(c);
                     setSections(c.sections || []);
@@ -191,8 +71,15 @@ export default function Dashboard() {
                     setEditName(c.name || "");
                     setEditSlug(c.slug || "");
                 }
+                else {
+                    console.log("reaching here");
+
+                    setShowCompanyModal(true);
+                }
             } catch {
                 window.location.href = "/login";
+            } finally {
+                setLoadingUser(false);
             }
         };
         fetchData();
@@ -217,7 +104,8 @@ export default function Dashboard() {
     const handleCreateJob = async () => {
         const res = await axios.post("/api/job", newJob);
         setJobs([...jobs, res.data.job]);
-        setNewJob({ title: "", description: "", location: "", jobType: "" });
+        setNewJob({ title: "", description: "", location: "", employment_type: "", experience_level: "", job_type: "", salary_range: "", work_policy: "", department: "" });
+        setShowJobForm(false)
     };
 
     const handleUpdateJob = async (id: string, key: string, value: string) => {
@@ -307,267 +195,425 @@ export default function Dashboard() {
 
         setSections(reordered);
     };
-    if (!user || !company)
+    if (loadingUser)
         return <div className="flex justify-center items-center h-screen">Loading...</div>;
 
+
     return (
-        <div className="flex flex-col md:flex-row w-full min-h-screen bg-gray-50">
-            {/* MAIN EDITOR */}
-            <div
-                className={`transition-all duration-300 ${isPreviewOpen ? "md:w-1/2" : "w-full"
-                    } p-4 flex flex-col items-center h-full`}
-            >
-                <div className="w-full md:w-3/4 bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
-                    {/* Cover Image */}
-                    <div className="relative h-48 bg-gray-200 flex justify-center items-center">
-                        {coverImage ? (
-                            <img
-                                src={coverImage}
-                                alt="Cover"
-                                className="object-cover w-full h-full "
-                            />
-                        ) : (
-                            <div className="flex items-center justify-center w-full h-full text-gray-500">
-                                No cover image
+        <>
+            {showCompanyModal ? (
+
+                <CompanyModal
+
+                    onSuccess={(createdCompany: any) => {
+                        setCompany(createdCompany);
+                        setShowCompanyModal(false);
+                    }}
+                    onClose={() => setShowCompanyModal(false)}
+                />
+            ) : (
+
+                <div className="flex flex-col md:flex-row w-full min-h-screen bg-gray-50">
+                    {/* MAIN EDITOR */}
+                    <div
+                        className={`transition-all duration-300 ${isPreviewOpen ? "md:w-1/2" : "w-full"
+                            } p-4 flex flex-col items-center h-full`}
+                    >
+                        <div className="w-full md:w-3/4 bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
+                            {/* Cover Image */}
+                            <div className="relative h-48 bg-gray-200 flex justify-center items-center">
+                                {coverImage ? (
+                                    <img
+                                        src={coverImage}
+                                        alt="Cover"
+                                        className="object-cover w-full h-full "
+                                    />
+                                ) : (
+                                    <div className="flex items-center justify-center w-full h-full text-gray-500">
+                                        No cover image
+                                    </div>
+                                )}
+
+                                {/* Upload button overlay */}
+                                <label
+                                    htmlFor="cover-upload"
+                                    className="absolute top-2 right-2 bg-white/90 text-sm px-3 py-1 rounded shadow cursor-pointer hover:bg-blue-100 transition"
+                                >
+                                    📤 Change Cover
+                                </label>
+                                <input
+                                    id="cover-upload"
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(e) => handleImageUpload(e, "cover")}
+                                />
                             </div>
-                        )}
 
-                        {/* Upload button overlay */}
-                        <label
-                            htmlFor="cover-upload"
-                            className="absolute top-2 right-2 bg-white/90 text-sm px-3 py-1 rounded shadow cursor-pointer hover:bg-blue-100 transition"
-                        >
-                            📤 Change Cover
-                        </label>
-                        <input
-                            id="cover-upload"
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => handleImageUpload(e, "cover")}
-                        />
-                    </div>
+                            {/* Centered Logo */}
+                            <div className="relative flex justify-center mt-[-3rem] mb-2">
+                                <div className="relative h-24 w-24 rounded-full bg-gray-100 border-4 border-white overflow-hidden shadow-md">
+                                    {logo ? (
+                                        <img src={logo} alt="Logo" className="object-cover w-full h-full" />
+                                    ) : (
+                                        <p className="text-gray-500 text-xs flex items-center justify-center h-full">
+                                            Upload Logo
+                                        </p>
+                                    )}
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => handleImageUpload(e, "logo")}
+                                        className="absolute bottom-0 right-0 bg-white p-1 rounded text-xs opacity-0 cursor-pointer w-full h-full"
+                                    />
+                                </div>
+                            </div>
 
-                    {/* Centered Logo */}
-                    <div className="relative flex justify-center mt-[-3rem] mb-2">
-                        <div className="relative h-24 w-24 rounded-full bg-gray-100 border-4 border-white overflow-hidden shadow-md">
-                            {logo ? (
-                                <img src={logo} alt="Logo" className="object-cover w-full h-full" />
-                            ) : (
-                                <p className="text-gray-500 text-xs flex items-center justify-center h-full">
-                                    Upload Logo
-                                </p>
-                            )}
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => handleImageUpload(e, "logo")}
-                                className="absolute bottom-0 right-0 bg-white p-1 rounded text-xs opacity-0 cursor-pointer w-full h-full"
-                            />
-                        </div>
-                    </div>
+                            {/* Company Title */}
+                            <div className="text-center mb-4 mt-2">
+                                <h1 className="text-xl font-semibold">{company.name}</h1>
+                                <p className="text-gray-500 text-sm">/{company.slug}</p>
+                            </div>
 
-                    {/* Company Title */}
-                    <div className="text-center mb-4 mt-2">
-                        <h1 className="text-xl font-semibold">{company.name}</h1>
-                        <p className="text-gray-500 text-sm">/{company.slug}</p>
-                    </div>
+                            {/* Edit Details Button */}
+                            <div className="flex justify-center mb-4">
+                                <Dialog open={editOpen} onOpenChange={setEditOpen}>
+                                    <DialogTrigger asChild>
+                                        <Button variant="outline" className="text-sm">
+                                            ⚙️ Edit Company Details
+                                        </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                        <DialogHeader>
+                                            <DialogTitle>Edit Company Details</DialogTitle>
+                                            <DialogDescription>
+                                                Update your company name, slug, or theme color below.
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <div className="grid gap-4 py-2">
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="name">Company Name</Label>
+                                                <Input
+                                                    id="name"
+                                                    value={editName}
+                                                    onChange={(e) => setEditName(e.target.value)}
+                                                    placeholder="Your company name"
+                                                />
+                                            </div>
 
-                    {/* Edit Details Button */}
-                    <div className="flex justify-center mb-4">
-                        <Dialog open={editOpen} onOpenChange={setEditOpen}>
-                            <DialogTrigger asChild>
-                                <Button variant="outline" className="text-sm">
-                                    ⚙️ Edit Company Details
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="slug">Slug</Label>
+                                                <Input
+                                                    id="slug"
+                                                    value={editSlug}
+                                                    onChange={(e) => setEditSlug(e.target.value)}
+                                                    placeholder="Unique company slug"
+                                                />
+                                            </div>
+
+                                            <div className="grid gap-2">
+                                                <Label>Theme Color</Label>
+                                                <Input
+                                                    type="color"
+                                                    value={themeColor}
+                                                    onChange={(e) => setThemeColor(e.target.value)}
+                                                    className="h-10 w-20"
+                                                />
+                                            </div>
+                                        </div>
+                                        <DialogFooter>
+                                            <Button onClick={handleSaveDetails}>Save Changes</Button>
+                                        </DialogFooter>
+                                    </DialogContent>
+                                </Dialog>
+                            </div>
+                            {/* Buttons */}
+                            <div className="flex justify-end flex-wrap gap-3 mt-4 mb-2 mx-8">
+                                <Button onClick={handleAddSection} variant="outline">+ Add Section</Button>
+                                <Button onClick={handleSaveSections}>💾 Save</Button>
+                                <Button variant="secondary" onClick={() => router.push(`/preview/${editSlug}`)}>
+                                    Preview
                                 </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>Edit Company Details</DialogTitle>
-                                    <DialogDescription>
-                                        Update your company name, slug, or theme color below.
-                                    </DialogDescription>
-                                </DialogHeader>
-                                <div className="grid gap-4 py-2">
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="name">Company Name</Label>
-                                        <Input
-                                            id="name"
-                                            value={editName}
-                                            onChange={(e) => setEditName(e.target.value)}
-                                            placeholder="Your company name"
-                                        />
-                                    </div>
-
-                                    <div className="grid gap-2">
-                                        <Label htmlFor="slug">Slug</Label>
-                                        <Input
-                                            id="slug"
-                                            value={editSlug}
-                                            onChange={(e) => setEditSlug(e.target.value)}
-                                            placeholder="Unique company slug"
-                                        />
-                                    </div>
-
-                                    <div className="grid gap-2">
-                                        <Label>Theme Color</Label>
-                                        <Input
-                                            type="color"
-                                            value={themeColor}
-                                            onChange={(e) => setThemeColor(e.target.value)}
-                                            className="h-10 w-20"
-                                        />
-                                    </div>
-                                </div>
-                                <DialogFooter>
-                                    <Button onClick={handleSaveDetails}>Save Changes</Button>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
-                    </div>
-                    {/* Buttons */}
-                    <div className="flex justify-end flex-wrap gap-3 mt-4 mb-2 mx-8">
-                        <Button onClick={handleAddSection} variant="outline">+ Add Section</Button>
-                        <Button onClick={handleSaveSections}>💾 Save</Button>
-                        <Button variant="secondary" onClick={() => setIsPreviewOpen(!isPreviewOpen)}>
-                            {isPreviewOpen ? "Close Preview" : "Preview"}
-                        </Button>
-                    </div>
-                    {/* Sections Builder */}
-                    <DragDropContext onDragEnd={handleDragEnd}>
-                        <Droppable droppableId="sections">
-                            {(provided) => (
-                                <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
-                                    <h1 className="text-2xl font-semibold mb-3 mx-8">Sections</h1>
-
-                                    {sections.map((section: any, index: number) => (
-                                        <Draggable key={section.id} draggableId={section.id} index={index}>
-                                            {(provided) => (
-                                                <div
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    className="relative shadow-md rounded-2xl p-4 bg-white border hover:shadow-xl transition-all duration-200 mx-8"
-                                                >
-
-                                                    {/* Drag Handle */}
-                                                    <div
-                                                        {...provided.dragHandleProps}
-                                                        className="absolute left-2 top-2 text-gray-400 hover:text-gray-600 cursor-grab"
-                                                        title="Drag to reorder"
-                                                    >
-                                                        ⠿
-                                                    </div>
-
-                                                    {/* Delete Button */}
-                                                    <button
-                                                        onClick={() => handleDelete(section.id)}
-                                                        className="absolute top-2 right-2 p-1 rounded hover:bg-red-100 text-red-500 text-sm opacity-70 hover:opacity-100"
-                                                        title="Delete Section"
-                                                    >
-                                                        🗑️
-                                                    </button>
-
-                                                    {/* Title */}
-                                                    <input
-                                                        placeholder="Section Title"
-                                                        value={section.title}
-                                                        onChange={(e) => handleChange(section.id, "title", e.target.value)}
-                                                        className="text-lg font-semibold w-full mb-3 border-b border-transparent focus:border-gray-300 outline-none pl-6"
-                                                    />
-
-                                                    {/* ✅ Tiptap Editor */}
-                                                    <SectionEditor
-                                                        value={section.content}
-
-                                                        onChange={(html: any) => handleChange(section.id, "content", html)}
-                                                    />
-                                                </div>
-                                            )}
-                                        </Draggable>
-                                    ))}
-
-                                    {provided.placeholder}
-                                </div>
-                            )}
-                        </Droppable>
-                    </DragDropContext>
-
-                    {/* jobs */}
-                    <div className="p-4 mt-8 mx-8">
-                        <h2 className="text-lg font-semibold mb-3">💼 Job Openings</h2>
-
-                        {/* Add New Job Form */}
-                        <div className="grid gap-3 border p-4 rounded-xl bg-white shadow-sm mb-4">
-                            <input className="border p-2 rounded" placeholder="Job Title"
-                                value={newJob.title} onChange={e => setNewJob({ ...newJob, title: e.target.value })} />
-                            <textarea className="border p-2 rounded" placeholder="Description"
-                                value={newJob.description} onChange={e => setNewJob({ ...newJob, description: e.target.value })} />
-                            <input className="border p-2 rounded" placeholder="Location"
-                                value={newJob.location} onChange={e => setNewJob({ ...newJob, location: e.target.value })} />
-                            <input className="border p-2 rounded" placeholder="Job Type (e.g. Full-Time)"
-                                value={newJob.jobType} onChange={e => setNewJob({ ...newJob, jobType: e.target.value })} />
-
-                            <Button onClick={handleCreateJob}>+ Add Job</Button>
-                        </div>
-
-
-                        {jobs?.map((job) => (
-                            <div key={job.id} className="border p-4 rounded-xl bg-white shadow-sm mb-3">
-                                <input className="font-semibold text-lg w-full mb-2 border-b"
-                                    value={job.title} onChange={e => handleUpdateJob(job.id, "title", e.target.value)} />
-                                <textarea className="w-full border rounded p-2 mb-2"
-                                    value={job.description} onChange={e => handleUpdateJob(job.id, "description", e.target.value)} />
-                                <input className="border p-2 rounded w-full mb-2"
-                                    value={job.location} onChange={e => handleUpdateJob(job.id, "location", e.target.value)} />
-                                <input className="border p-2 rounded w-full mb-2"
-                                    value={job.jobType} onChange={e => handleUpdateJob(job.id, "jobType", e.target.value)} />
-
-                                <Button variant="destructive" onClick={() => handleDeleteJob(job.id)}>Delete</Button>
                             </div>
-                        ))}
+                            {/* Sections Builder */}
+                            <DragDropContext onDragEnd={handleDragEnd}>
+                                <Droppable droppableId="sections">
+                                    {(provided) => (
+                                        <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
+                                            <h1 className="text-2xl font-semibold mb-3 mx-8">Sections</h1>
 
-                    </div>
+                                            {sections.map((section: any, index: number) => (
+                                                <Draggable key={section.id} draggableId={section.id} index={index}>
+                                                    {(provided) => (
+                                                        <div
+                                                            ref={provided.innerRef}
+                                                            {...provided.draggableProps}
+                                                            className="relative shadow-md rounded-2xl p-4 bg-white border hover:shadow-xl transition-all duration-200 mx-8"
+                                                        >
 
+                                                            {/* Drag Handle */}
+                                                            <div
+                                                                {...provided.dragHandleProps}
+                                                                className="absolute left-2 top-2 text-gray-400 hover:text-gray-600 cursor-grab"
+                                                                title="Drag to reorder"
+                                                            >
+                                                                ⠿
+                                                            </div>
 
+                                                            {/* Delete Button */}
+                                                            <button
+                                                                onClick={() => handleDelete(section.id)}
+                                                                className="absolute top-2 right-2 p-1 rounded hover:bg-red-100 text-red-500 text-sm opacity-70 hover:opacity-100"
+                                                                title="Delete Section"
+                                                            >
+                                                                🗑️
+                                                            </button>
 
+                                                            {/* Title */}
+                                                            <input
+                                                                placeholder="Section Title"
+                                                                value={section.title}
+                                                                onChange={(e) => handleChange(section.id, "title", e.target.value)}
+                                                                className="text-lg font-semibold w-full mb-3 border-b border-transparent focus:border-gray-300 outline-none pl-6"
+                                                            />
 
+                                                            {/* ✅ Tiptap Editor */}
+                                                            <SectionEditor
+                                                                value={section.content}
 
-                </div>
+                                                                onChange={(html: any) => handleChange(section.id, "content", html)}
+                                                            />
+                                                        </div>
+                                                    )}
+                                                </Draggable>
+                                            ))}
 
+                                            {provided.placeholder}
+                                        </div>
+                                    )}
+                                </Droppable>
+                            </DragDropContext>
 
-            </div>
+                            {/* jobs */}
+                            <section className="bg-gray-50 px-6 md:px-16 py-16 border-t mt-12">
 
-            {/* PREVIEW */}
-            {isPreviewOpen && (
-                <div className="w-full md:w-1/2 border-t md:border-t-0 md:border-l bg-white p-4 overflow-auto">
-                    <h2 className="text-xl font-bold mb-4">Live Preview 👀</h2>
-                    <div className="w-full">
-                        <img src={coverImage || ""} className="h-40 w-full object-cover rounded" />
-                        <div className="flex justify-center mt-[-3rem]">
-                            <img
-                                src={logo || ""}
-                                className="h-24 w-24 rounded-full border-4 border-white object-cover"
-                            />
-                        </div>
-                        <div className="text-center mt-4">
-                            <h3 className="text-lg font-semibold">{company.name}</h3>
-                            <p className="text-gray-500 text-sm">/{company.slug}</p>
-                        </div>
-                        <div className="mt-6">
-                            {sections.map((sec) => (
-                                <div key={sec.id} className="mb-4">
-                                    <h4 style={{ color: themeColor }} className="font-semibold text-lg">
-                                        {sec.title}
-                                    </h4>
-                                    <p className="text-gray-600">{sec.content}</p>
+                                {/* Heading + Intro (matches preview style) */}
+                                <div className="text-center max-w-3xl mx-auto mb-12">
+                                    <h2 className="text-3xl font-bold mb-4" style={{ color: themeColor }}>
+                                        Join the team, we're hiring!
+                                    </h2>
+                                    <p className="text-gray-600 text-lg">
+                                        Enough about us. We’re more interested in you. If you’re bright, bold, and looking for more than just a job — we’d love to meet you.
+                                    </p>
                                 </div>
-                            ))}
+
+                                {/* Add Job Button */}
+                                <div className="flex justify-end mb-6">
+                                    <Button onClick={() => setShowJobForm(true)}>+ Add Job</Button>
+                                </div>
+
+                                {/* Add Job Modal */}
+                                {showJobForm && (
+                                    <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+                                        <div className="bg-white w-full max-w-lg p-6 rounded-xl shadow-xl space-y-4">
+
+                                            <h3 className="text-lg font-semibold">Create Job</h3>
+
+                                            <input className="border rounded px-3 py-2 w-full"
+                                                placeholder="Job Title"
+                                                value={newJob.title}
+                                                onChange={(e) => setNewJob({ ...newJob, title: e.target.value })}
+                                            />
+
+                                            <textarea className="border rounded px-3 py-2 w-full"
+                                                placeholder="Job Description"
+                                                value={newJob.description}
+                                                onChange={(e) => setNewJob({ ...newJob, description: e.target.value })}
+                                            />
+
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                <input
+                                                    className="border rounded px-3 py-2 w-full"
+                                                    placeholder="Location"
+                                                    value={newJob.location}
+                                                    onChange={(e) => setNewJob({ ...newJob, location: e.target.value })}
+                                                />
+
+                                                <select
+                                                    className="border rounded px-3 py-2 w-full"
+                                                    value={newJob.job_type}
+                                                    onChange={(e) => setNewJob({ ...newJob, job_type: e.target.value })}
+                                                >
+                                                    <option value="">Select Job Type</option>
+                                                    {JOB_TYPE_OPTIONS.map((opt) => (
+                                                        <option key={opt} value={opt}>
+                                                            {opt}
+                                                        </option>
+                                                    ))}
+                                                </select>
+
+                                                <select
+                                                    className="border rounded px-3 py-2 w-full"
+                                                    value={newJob.work_policy}
+                                                    onChange={(e) => setNewJob({ ...newJob, work_policy: e.target.value })}
+                                                >
+                                                    <option value="">Select Work Policy</option>
+                                                    {WORK_POLICY_OPTIONS.map((opt) => (
+                                                        <option key={opt} value={opt}>
+                                                            {opt}
+                                                        </option>
+                                                    ))}
+                                                </select>
+
+                                                <select
+                                                    className="border rounded px-3 py-2 w-full"
+                                                    value={newJob.employment_type}
+                                                    onChange={(e) =>
+                                                        setNewJob({ ...newJob, employment_type: e.target.value })
+                                                    }
+                                                >
+                                                    <option value="">Select Employment Type</option>
+                                                    {EMPLOYMENT_TYPE_OPTIONS.map((opt) => (
+                                                        <option key={opt} value={opt}>
+                                                            {opt}
+                                                        </option>
+                                                    ))}
+                                                </select>
+
+                                                <select
+                                                    className="border rounded px-3 py-2 w-full"
+                                                    value={newJob.experience_level}
+                                                    onChange={(e) =>
+                                                        setNewJob({ ...newJob, experience_level: e.target.value })
+                                                    }
+                                                >
+                                                    <option value="">Select Experience Level</option>
+                                                    {EXPERIENCE_LEVEL_OPTIONS.map((opt) => (
+                                                        <option key={opt} value={opt}>
+                                                            {opt}
+                                                        </option>
+                                                    ))}
+                                                </select>
+
+                                            </div>
+
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                                <input className="border rounded px-3 py-2 w-full"
+                                                    placeholder="Department (e.g. Engineering)"
+                                                    value={newJob.department}
+                                                    onChange={(e) => setNewJob({ ...newJob, department: e.target.value })}
+                                                />
+
+                                                <input className="border rounded px-3 py-2 w-full"
+                                                    placeholder="Salary range (e.g. $80k - $100k)"
+                                                    value={newJob.salary_range}
+                                                    onChange={(e) => setNewJob({ ...newJob, salary_range: e.target.value })}
+                                                />
+
+
+
+                                            </div>
+
+                                            <div className="flex justify-end gap-3 pt-2">
+                                                <Button variant="outline" onClick={() => setShowJobForm(false)}>Cancel</Button>
+                                                <Button onClick={handleCreateJob}>Save Job</Button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Job List (matches preview style layout) */}
+                                <div className="divide-y divide-gray-200 mt-8">
+                                    {jobs.length === 0 && (
+                                        <p className="text-gray-500 text-center py-10">No jobs created yet.</p>
+                                    )}
+
+                                    {jobs.map((job) => (
+                                        <div
+                                            key={job.id}
+                                            className="py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6"
+                                        >
+                                            {/* Editable Job Title */}
+                                            <div>
+                                                <input
+                                                    className="text-lg font-semibold border-b border-gray-300 focus:outline-none"
+                                                    style={{ color: themeColor }}
+                                                    value={job.title}
+                                                    onChange={(e) => handleUpdateJob(job.id, "title", e.target.value)}
+                                                />
+                                                <p className="text-gray-500 text-sm mt-1">
+                                                    Posted {job.createdAt || "Recently"}
+                                                </p>
+                                            </div>
+
+                                            {/* Editable Meta Info */}
+                                            <div className="flex flex-col md:flex-row md:items-center gap-6 text-sm text-gray-700">
+
+                                                <input
+                                                    className="border px-2 py-1 rounded"
+                                                    value={job.location}
+
+                                                    onChange={(e) => handleUpdateJob(job.id, "location", e.target.value)}
+                                                />
+
+                                                <EditableSelectField
+                                                    job={job}
+                                                    field="work_policy"
+                                                    options={WORK_POLICY_OPTIONS}
+                                                    onSave={handleUpdateJob}
+                                                />
+
+                                                <EditableSelectField
+                                                    job={job}
+                                                    field="employment_type"
+                                                    options={EMPLOYMENT_TYPE_OPTIONS}
+                                                    onSave={handleUpdateJob}
+                                                />
+
+                                                <EditableSelectField
+                                                    job={job}
+                                                    field="job_type"
+                                                    options={JOB_TYPE_OPTIONS}
+                                                    onSave={handleUpdateJob}
+                                                />
+
+                                                <EditableSelectField
+                                                    job={job}
+                                                    field="experience_level"
+                                                    options={EXPERIENCE_LEVEL_OPTIONS}
+                                                    onSave={handleUpdateJob}
+                                                />
+
+                                            </div>
+
+                                            <Button variant="destructive" onClick={() => handleDeleteJob(job.id)}>
+                                                Delete
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
+
+                            </section>
+
+
+
+
+
+
+
                         </div>
+
+
                     </div>
+
+
                 </div>
+
             )}
-        </div>
+        </>
     );
+
 }
 
 

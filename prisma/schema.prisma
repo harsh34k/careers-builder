@@ -1,11 +1,11 @@
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../app/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://neondb_owner:npg_RQP7CoXtBGA6@ep-restless-sun-ad1z1n7e-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 }
 
 model Recruiter {
@@ -38,13 +38,18 @@ model Company {
 }
 
 model Job {
-  id          String   @id @default(cuid())
-  title       String
-  description String
-  location    String?
-  jobType     String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  companyId   String
-  company     Company  @relation(fields: [companyId], references: [id])
+  id               String   @id @default(cuid())
+  title            String
+  description      String
+  location         String
+  work_policy      String
+  employment_type  String
+  department       String
+  experience_level String
+  job_type         String
+  salary_range     String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  companyId        String
+  company          Company  @relation(fields: [companyId], references: [id])
 }
