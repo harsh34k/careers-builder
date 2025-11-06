@@ -20,7 +20,7 @@ export default function SectionBuilder({
                     {(provided) => (
                         <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
                             <h1 className="text-2xl font-semibold mb-3 mx-8">Sections</h1>
-                            <p className="text-gray-400 text-sm text-end mx-6">Please save your work to see changes in preview and public page</p>
+                            <p className="text-gray-400 text-sm text-end mx-6">Please save your work to see changes in preview and public page </p>
 
                             {sections.map((section: any, index: number) => (
                                 <Draggable key={section.id} draggableId={section.id} index={index}>
