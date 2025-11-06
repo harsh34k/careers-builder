@@ -96,6 +96,18 @@ export default function JobManager({
                                 <option value="">Experience Level</option>
                                 {EXPERIENCE_LEVEL_OPTIONS.map((opt: any) => <option key={opt}>{opt}</option>)}
                             </select>
+                            <input
+                                placeholder="Department"
+                                className="border rounded px-3 py-2 w-full"
+                                value={newJob.department}
+                                onChange={(e) => setNewJob({ ...newJob, department: e.target.value })}
+                            />
+                            <input
+                                placeholder="Salary Range"
+                                className="border rounded px-3 py-2 w-full"
+                                value={newJob.salary_range}
+                                onChange={(e) => setNewJob({ ...newJob, salary_range: e.target.value })}
+                            />
                         </div>
 
                         <div className="flex  justify-end gap-3 pt-2">
