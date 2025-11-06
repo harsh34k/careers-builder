@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 
 
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/prisma";
 
 export async function GET(
     req: Request,
@@ -36,7 +35,7 @@ export async function GET(
             description: company.description,
             sections: company.sections,
             createdAt: company.createdAt,
-            jobs: company.jobPosts.map((job) => ({
+            jobs: company.jobPosts.map((job: any) => ({
                 id: job.id,
                 title: job.title,
                 description: job.description,

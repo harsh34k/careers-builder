@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client"
 import verifyJWT from "@/lib/jwt";
 
-const prisma = new PrismaClient()
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
     try {

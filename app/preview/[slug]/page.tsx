@@ -1,9 +1,8 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import verifyJWT from "@/lib/jwt";
-import { PrismaClient } from "@prisma/client"
 import CareersPage from "@/app/components/CarrerPage";
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 export default async function PreviewPage({ params }: any) {
     const { slug } = await params
