@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 
 export async function GET(
     req: Request,
-    { params }: { params: { slug: string } }
+    { params }: any
 ) {
     try {
         const { slug } = await params;

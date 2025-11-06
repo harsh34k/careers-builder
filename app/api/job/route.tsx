@@ -70,10 +70,10 @@ export async function GET(req: Request) {
 
 export async function DELETE(
     req: Request,
-    { params }: { params: Promise<{ id: string }> }
+    { params }: any
 ) {
     try {
-        const { id } = await params; // ✅ unwrap the promise
+        const { id } = await params;
 
         if (!id) {
             return NextResponse.json({ error: "Missing job id" }, { status: 400 });
@@ -89,7 +89,7 @@ export async function DELETE(
         const decoded = verifyJWT(token);
 
         const job = await prisma.job.findUnique({
-            where: { id }, // ✅ use id (not params.id)
+            where: { id },
         });
 
         if (!job) {
