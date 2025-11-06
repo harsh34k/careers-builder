@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "../../generated/prisma/client"
+import { PrismaClient } from "@prisma/client"
 import verifyJWT from "@/lib/jwt";
 
 const prisma = new PrismaClient()

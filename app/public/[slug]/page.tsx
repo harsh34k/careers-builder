@@ -2,7 +2,7 @@ import CareersPage from "@/app/components/CarrerPage"
 import verifyJWT from "@/lib/jwt";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { PrismaClient } from "../../generated/prisma/client"
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 export default async function PreviewPage({ params }: any) {
     const token = await cookies()

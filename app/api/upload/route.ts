@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import cloudinary from "@/lib/cloudinary";
-import { PrismaClient } from "../../generated/prisma/client"
+import { PrismaClient } from "@prisma/client"
 import verifyJWT from "@/lib/jwt";
 const prisma = new PrismaClient()
 export async function POST(req: Request) {

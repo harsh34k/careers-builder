@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import verifyJWT from "@/lib/jwt";
-import { PrismaClient } from "../../generated/prisma/client"
+import { PrismaClient } from "@prisma/client"
 import CareersPage from "@/app/components/CarrerPage";
 const prisma = new PrismaClient();
 
