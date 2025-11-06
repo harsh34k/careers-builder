@@ -178,10 +178,10 @@ export default function CareersPage({ params }: any) {
             <section className="bg-gray-50 px-4 sm:px-6 lg:px-16 py-16">
                 <div className="text-center max-w-2xl mx-auto mb-8">
                     <h2 style={{ color: themeColor }} className="text-3xl font-bold mb-3">
-                        Join the team, we're hiring!
+                        Join the team, we are hiring!
                     </h2>
                     <p className="text-gray-600 text-lg">
-                        We’d love to meet talented people like you.
+                        We would love to meet talented people like you.
                     </p>
                 </div>
 

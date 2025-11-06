@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Pencil } from "lucide-react"; // If you're using lucide-react. If not, replace with emoji.
+import { Pencil } from "lucide-react";
 
 export default function EditableSelectField({
     job,
@@ -38,7 +38,7 @@ export default function EditableSelectField({
             ) : (
                 <button
                     onClick={() => setIsEditing(true)}
-                    className="flex items-center gap-1 pr-2 pl-3 py-1 border rounded-md bg-gray-50 hover:bg-gray-100 transition text-sm"
+                    className="flex items-center cursor-pointer gap-1 pr-2 pl-3 py-1 border rounded-md bg-gray-50 hover:bg-gray-100 transition text-sm"
                 >
                     <span>{value}</span>
                     <Pencil size={14} className="text-gray-400 hover:text-gray-600 transition" />

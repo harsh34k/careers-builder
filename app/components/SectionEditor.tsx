@@ -14,7 +14,7 @@ export default function SectionEditor({ value, onChange }: any) {
         content: value,
         immediatelyRender: false,
         onUpdate: ({ editor }) => {
-            onChange(editor.getHTML()); // store HTML in DB
+            onChange(editor.getHTML());
         },
     });
 
@@ -27,28 +27,27 @@ export default function SectionEditor({ value, onChange }: any) {
 
                 <button
                     onClick={() => editor.chain().focus().toggleBold().run()}
-                    className={`p-1 rounded hover:bg-gray-200 ${editor.isActive("bold") && "bg-gray-300"}`}
+                    className={`p-1 cursor-pointer rounded hover:bg-gray-200 ${editor.isActive("bold") && "bg-gray-300"}`}
                 >
                     <Bold size={16} />
                 </button>
 
                 <button
                     onClick={() => editor.chain().focus().toggleItalic().run()}
-                    className={`p-1 rounded hover:bg-gray-200 ${editor.isActive("italic") && "bg-gray-300"}`}
+                    className={`p-1 rounded cursor-pointer hover:bg-gray-200 ${editor.isActive("italic") && "bg-gray-300"}`}
                 >
                     <Italic size={16} />
                 </button>
 
                 <button
                     onClick={() => editor.chain().focus().toggleUnderline().run()}
-                    className={`p-1 rounded hover:bg-gray-200 ${editor.isActive("underline") && "bg-gray-300"}`}
+                    className={`p-1 rounded cursor-pointer hover:bg-gray-200 ${editor.isActive("underline") && "bg-gray-300"}`}
                 >
                     <UnderlineIcon size={16} />
                 </button>
 
             </div>
 
-            {/* Editable Content */}
             <EditorContent editor={editor} className="p-2 min-h-[100px]" />
         </div>
     );

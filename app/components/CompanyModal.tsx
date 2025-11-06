@@ -58,7 +58,7 @@ export default function CompanyModal({ onClose, onSuccess }: { onClose: any; onS
                 <div className="flex justify-between items-center mt-6">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 rounded border border-gray-300 hover:bg-gray-100 transition"
+                        className="px-4 py-2 cursor-pointer rounded border border-gray-300 hover:bg-gray-100 transition"
                     >
                         Cancel
                     </button>
@@ -66,7 +66,7 @@ export default function CompanyModal({ onClose, onSuccess }: { onClose: any; onS
                     <button
                         onClick={handleCreate}
                         disabled={loading}
-                        className="bg-black text-white px-5 py-2 rounded hover:bg-gray-900 transition disabled:opacity-50"
+                        className="bg-black text-white cursor-pointer px-5 py-2 rounded hover:bg-gray-900 transition disabled:opacity-50"
                     >
                         {loading ? "Creating..." : "Create Company"}
                     </button>

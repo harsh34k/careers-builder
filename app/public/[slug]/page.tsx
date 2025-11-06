@@ -5,7 +5,6 @@ import { redirect } from "next/navigation";
 import { PrismaClient } from "../../generated/prisma/client"
 const prisma = new PrismaClient();
 export default async function PreviewPage({ params }: any) {
-    const { slug } = await params
     const token = await cookies()
     const data = token.get("token")?.value;
     if (!data) redirect("/login");

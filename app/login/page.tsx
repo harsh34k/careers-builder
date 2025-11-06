@@ -43,17 +43,18 @@ export default function Login() {
                     className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:outline-none focus:border-blue-500 transition"
                 />
 
-                {/* Normal Login Button */}
+
                 <button
                     onClick={handleLogin}
                     disabled={loading}
-                    className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-blue-600 text-white py-2 cursor-pointer rounded-lg font-medium hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {loading ? "Logging in..." : "Login"}
                 </button>
 
-                {/* Test User Login Button */}
+                {/* Test User */}
                 <button
+
                     onClick={async () => {
                         try {
                             setLoading(true);
@@ -69,7 +70,7 @@ export default function Login() {
                         }
                     }}
                     disabled={loading}
-                    className="w-full border border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full border cursor-pointer  border-gray-300 text-gray-700 py-2 rounded-lg font-medium hover:bg-gray-100 transition disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     {loading ? "Logging in..." : "Login as Test User"}
                 </button>

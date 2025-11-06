@@ -14,14 +14,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 import dynamic from "next/dynamic";
-import EditableSelectField from "../components/EditableSelectField";
+
 import CompanyModal from "../components/CompanyModal";
-import { Trash2 } from "lucide-react";
-const SectionEditor = dynamic(() => import("../components/SectionEditor"), {
-    ssr: false,
-});
+
+import SectionBuilder from "../components/SectionBuilder";
+import JobManager from "../components/JobManager";
+
 
 axios.defaults.withCredentials = true;
 
@@ -140,7 +139,6 @@ export default function Dashboard() {
         setJobs(jobs.filter(j => j.id !== id));
     };
 
-    // Upload handlers (you can connect Cloudinary later)
     const handleImageUpload = async (e: any, type: "cover" | "logo") => {
         const file = e.target.files[0];
         if (!file) return;
@@ -149,12 +147,6 @@ export default function Dashboard() {
         formData.append("file", file);
         formData.append("type", type);
 
-        // const res = await fetch("/api/upload", {
-        //     method: "POST",
-        //     body: formData,
-        // });
-
-        // const data = await res.json();
         const res = await axios.post("/api/upload", formData);
         console.log("response", res);
 
@@ -300,8 +292,8 @@ export default function Dashboard() {
                             <div className="flex justify-end mb-4 mx-7">
                                 <Dialog open={editOpen} onOpenChange={setEditOpen}>
                                     <DialogTrigger asChild>
-                                        <Button variant="outline" className="text-sm">
-                                            ⚙️ Edit Company Details
+                                        <Button variant="outline" className="text-sm cursor-pointer">
+                                            Edit Company Details
                                         </Button>
                                     </DialogTrigger>
                                     <DialogContent>
@@ -344,23 +336,24 @@ export default function Dashboard() {
                                             </div>
                                         </div>
                                         <DialogFooter>
-                                            <Button onClick={handleSaveDetails}>Save Changes</Button>
+                                            <Button className="cursor-pointer" onClick={handleSaveDetails}>Save Changes</Button>
                                         </DialogFooter>
                                     </DialogContent>
                                 </Dialog>
                             </div>
                             {/* Buttons */}
                             <div className="flex justify-end flex-wrap gap-3 mt-4 mb-2 mx-8">
-                                <Button onClick={handleAddSection} variant="outline">+ Add Section</Button>
-                                <Button onClick={handleSaveSections}>💾 Save</Button>
-                                <Button variant="secondary" onClick={() => router.push(`/preview/${editSlug}`)}>
+                                <Button className="cursor-pointer" onClick={handleAddSection} variant="outline">+ Add Section</Button>
+                                <Button className="cursor-pointer" onClick={handleSaveSections}>💾 Save</Button>
+                                <Button className="cursor-pointer" variant="secondary" onClick={() => router.push(`/preview/${editSlug}`)}>
                                     Preview
                                 </Button>
-                                <Button variant="secondary" onClick={handlePublishChange}>
+                                <Button className="cursor-pointer" variant="secondary" onClick={handlePublishChange}>
                                     {isPublished ? "UnPublish" : "Publish"}
                                 </Button>
                                 <Button
                                     variant="outline"
+                                    className="cursor-pointer"
                                     onClick={() => {
                                         const publicUrl = `${window.location.origin}/public/${company.slug}`;
                                         navigator.clipboard.writeText(publicUrl);
@@ -372,296 +365,37 @@ export default function Dashboard() {
 
                             </div>
                             {/* Sections Builder */}
-                            <DragDropContext onDragEnd={handleDragEnd}>
-                                <Droppable droppableId="sections">
-                                    {(provided) => (
-                                        <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
-                                            <h1 className="text-2xl font-semibold mb-3 mx-8">Sections</h1>
-
-                                            {sections.map((section: any, index: number) => (
-                                                <Draggable key={section.id} draggableId={section.id} index={index}>
-                                                    {(provided) => (
-                                                        <div
-                                                            ref={provided.innerRef}
-                                                            {...provided.draggableProps}
-                                                            className="relative shadow-md rounded-2xl p-4 bg-white border hover:shadow-xl transition-all duration-200 mx-8"
-                                                        >
-
-                                                            {/* Drag Handle */}
-                                                            <div
-                                                                {...provided.dragHandleProps}
-                                                                className="absolute left-2 top-2 text-gray-400 hover:text-gray-600 cursor-grab"
-                                                                title="Drag to reorder"
-                                                            >
-                                                                ⠿
-                                                            </div>
-
-                                                            {/* Delete Button */}
-                                                            {/* <button
-                                                                onClick={() => handleDelete(section.id)}
-                                                                className="absolute top-2 right-2 p-1 rounded hover:bg-red-100 text-red-500 text-sm opacity-70 hover:opacity-100"
-                                                                title="Delete Section"
-                                                            >
-                                                                🗑️
-                                                            </button> */}
-                                                            <button
-                                                                onClick={() => handleDelete(section.id)}
-                                                                className="absolute top-2 right-2 p-1  rounded-md hover:bg-red-100 text-red-500 transition"
-                                                                title="Delete Section"
-                                                            >
-                                                                <Trash2 size={18} />
-                                                            </button>
-
-                                                            {/* Title */}
-                                                            <input
-                                                                placeholder="Section Title"
-                                                                value={section.title}
-                                                                onChange={(e) => handleChange(section.id, "title", e.target.value)}
-                                                                className="text-lg font-semibold w-full mb-3 border-b border-transparent focus:border-gray-300 outline-none pl-6"
-                                                            />
-
-                                                            {/* ✅ Tiptap Editor */}
-                                                            <SectionEditor
-                                                                value={section.content}
-
-                                                                onChange={(html: any) => handleChange(section.id, "content", html)}
-                                                            />
-                                                        </div>
-                                                    )}
-                                                </Draggable>
-                                            ))}
-
-                                            {provided.placeholder}
-                                        </div>
-                                    )}
-                                </Droppable>
-                            </DragDropContext>
+                            <SectionBuilder
+                                sections={sections}
+                                handleDragEnd={handleDragEnd}
+                                handleChange={handleChange}
+                                handleDelete={handleDelete}
+                                handleAddSection={handleAddSection}
+                                handleSaveSections={handleSaveSections}
+                            />
 
                             {/* jobs */}
-                            <section className="bg-gray-50 px-6 md:px-16 py-16 border-t mt-12">
-
-                                {/* Heading + Intro (matches preview style) */}
-                                <div className="text-center max-w-3xl mx-auto mb-12">
-                                    <h2 className="text-3xl font-bold mb-4" style={{ color: themeColor }}>
-                                        Join the team, we're hiring!
-                                    </h2>
-                                    <p className="text-gray-600 text-lg">
-                                        Enough about us. We’re more interested in you. If you’re bright, bold, and looking for more than just a job — we’d love to meet you.
-                                    </p>
-                                </div>
-
-                                {/* Add Job Button */}
-                                <div className="flex justify-end mb-6">
-                                    <Button onClick={() => setShowJobForm(true)}>+ Add Job</Button>
-                                </div>
-
-                                {/* Add Job Modal */}
-                                {showJobForm && (
-                                    <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
-                                        <div className="bg-white w-full max-w-lg p-6 rounded-xl shadow-xl space-y-4">
-
-                                            <h3 className="text-lg font-semibold">Create Job</h3>
-
-                                            <input className="border rounded px-3 py-2 w-full"
-                                                placeholder="Job Title"
-                                                value={newJob.title}
-                                                onChange={(e) => setNewJob({ ...newJob, title: e.target.value })}
-                                            />
-
-                                            <textarea className="border rounded px-3 py-2 w-full"
-                                                placeholder="Job Description"
-                                                value={newJob.description}
-                                                onChange={(e) => setNewJob({ ...newJob, description: e.target.value })}
-                                            />
-
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                <input
-                                                    className="border rounded px-3 py-2 w-full"
-                                                    placeholder="Location"
-                                                    value={newJob.location}
-                                                    onChange={(e) => setNewJob({ ...newJob, location: e.target.value })}
-                                                />
-
-                                                <select
-                                                    className="border rounded px-3 py-2 w-full"
-                                                    value={newJob.job_type}
-                                                    onChange={(e) => setNewJob({ ...newJob, job_type: e.target.value })}
-                                                >
-                                                    <option value="">Select Job Type</option>
-                                                    {JOB_TYPE_OPTIONS.map((opt) => (
-                                                        <option key={opt} value={opt}>
-                                                            {opt}
-                                                        </option>
-                                                    ))}
-                                                </select>
-
-                                                <select
-                                                    className="border rounded px-3 py-2 w-full"
-                                                    value={newJob.work_policy}
-                                                    onChange={(e) => setNewJob({ ...newJob, work_policy: e.target.value })}
-                                                >
-                                                    <option value="">Select Work Policy</option>
-                                                    {WORK_POLICY_OPTIONS.map((opt) => (
-                                                        <option key={opt} value={opt}>
-                                                            {opt}
-                                                        </option>
-                                                    ))}
-                                                </select>
-
-                                                <select
-                                                    className="border rounded px-3 py-2 w-full"
-                                                    value={newJob.employment_type}
-                                                    onChange={(e) =>
-                                                        setNewJob({ ...newJob, employment_type: e.target.value })
-                                                    }
-                                                >
-                                                    <option value="">Select Employment Type</option>
-                                                    {EMPLOYMENT_TYPE_OPTIONS.map((opt) => (
-                                                        <option key={opt} value={opt}>
-                                                            {opt}
-                                                        </option>
-                                                    ))}
-                                                </select>
-
-                                                <select
-                                                    className="border rounded px-3 py-2 w-full"
-                                                    value={newJob.experience_level}
-                                                    onChange={(e) =>
-                                                        setNewJob({ ...newJob, experience_level: e.target.value })
-                                                    }
-                                                >
-                                                    <option value="">Select Experience Level</option>
-                                                    {EXPERIENCE_LEVEL_OPTIONS.map((opt) => (
-                                                        <option key={opt} value={opt}>
-                                                            {opt}
-                                                        </option>
-                                                    ))}
-                                                </select>
-
-                                            </div>
-
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                                <input className="border rounded px-3 py-2 w-full"
-                                                    placeholder="Department (e.g. Engineering)"
-                                                    value={newJob.department}
-                                                    onChange={(e) => setNewJob({ ...newJob, department: e.target.value })}
-                                                />
-
-                                                <input className="border rounded px-3 py-2 w-full"
-                                                    placeholder="Salary range (e.g. $80k - $100k)"
-                                                    value={newJob.salary_range}
-                                                    onChange={(e) => setNewJob({ ...newJob, salary_range: e.target.value })}
-                                                />
-
-
-
-                                            </div>
-
-                                            <div className="flex justify-end gap-3 pt-2">
-                                                <Button variant="outline" onClick={() => setShowJobForm(false)}>Cancel</Button>
-                                                <Button onClick={handleCreateJob}>Save Job</Button>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Job List (matches preview style layout) */}
-                                <div className="divide-y divide-gray-200 mt-8">
-                                    {jobs.length === 0 && (
-                                        <p className="text-gray-500 text-center py-10">No jobs created yet.</p>
-                                    )}
-
-                                    {jobs.map((job) => (
-                                        <div
-                                            key={job.id}
-                                            className="py-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6"
-                                        >
-                                            {/* Editable Job Title */}
-                                            <div>
-                                                <input
-                                                    className="text-lg font-semibold border-b border-gray-300 focus:outline-none"
-                                                    style={{ color: themeColor }}
-                                                    value={job.title}
-                                                    onChange={(e) => handleUpdateJob(job.id, "title", e.target.value)}
-                                                />
-                                                <p className="text-gray-500 text-sm mt-1">
-                                                    Posted {job.createdAt || "Recently"}
-                                                </p>
-                                            </div>
-
-                                            {/* Editable Meta Info */}
-                                            <div className="flex flex-col md:flex-row md:items-center gap-6 text-sm text-gray-700">
-
-                                                <input
-                                                    className="border px-2 py-1 rounded"
-                                                    value={job.location}
-
-                                                    onChange={(e) => handleUpdateJob(job.id, "location", e.target.value)}
-                                                />
-
-                                                <EditableSelectField
-                                                    job={job}
-                                                    field="work_policy"
-                                                    options={WORK_POLICY_OPTIONS}
-                                                    onSave={handleUpdateJob}
-                                                />
-
-                                                <EditableSelectField
-                                                    job={job}
-                                                    field="employment_type"
-                                                    options={EMPLOYMENT_TYPE_OPTIONS}
-                                                    onSave={handleUpdateJob}
-                                                />
-
-                                                <EditableSelectField
-                                                    job={job}
-                                                    field="job_type"
-                                                    options={JOB_TYPE_OPTIONS}
-                                                    onSave={handleUpdateJob}
-                                                />
-
-                                                <EditableSelectField
-                                                    job={job}
-                                                    field="experience_level"
-                                                    options={EXPERIENCE_LEVEL_OPTIONS}
-                                                    onSave={handleUpdateJob}
-                                                />
-
-                                            </div>
-
-                                            <button
-                                                onClick={() => handleDeleteJob(job.id)}
-                                                className="p-2 rounded-md hover:bg-red-100 text-red-500 transition"
-                                                title="Delete Job"
-                                            >
-                                                <Trash2 size={18} />
-                                            </button>
-
-                                        </div>
-                                    ))}
-                                </div>
-
-                            </section>
-
-
-
-
-
-
-
+                            <JobManager
+                                jobs={jobs}
+                                themeColor={themeColor}
+                                newJob={newJob}
+                                setNewJob={setNewJob}
+                                showJobForm={showJobForm}
+                                setShowJobForm={setShowJobForm}
+                                handleCreateJob={handleCreateJob}
+                                handleUpdateJob={handleUpdateJob}
+                                handleDeleteJob={handleDeleteJob}
+                                JOB_TYPE_OPTIONS={JOB_TYPE_OPTIONS}
+                                WORK_POLICY_OPTIONS={WORK_POLICY_OPTIONS}
+                                EMPLOYMENT_TYPE_OPTIONS={EMPLOYMENT_TYPE_OPTIONS}
+                                EXPERIENCE_LEVEL_OPTIONS={EXPERIENCE_LEVEL_OPTIONS}
+                            />
                         </div>
-
-
                     </div>
-
-
                 </div>
-
             )}
         </>
     );
-
 }
 
 

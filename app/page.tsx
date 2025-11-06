@@ -19,14 +19,14 @@ export default function Home() {
       <div className="mt-8 flex gap-4">
         <button
           onClick={() => router.push("/login")}
-          className="px-6 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
+          className="px-6 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition cursor-pointer"
         >
           Login
         </button>
 
         <button
           onClick={() => router.push("/signup")}
-          className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 transition"
+          className="px-6 py-2 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 cursor-pointer transition"
         >
           Sign up
         </button>

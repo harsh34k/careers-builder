@@ -46,11 +46,11 @@ export default function SectionsBuilderTab({ company, setCompany }: any) {
             onChange={(e) => handleChange(section.id, "content", e.target.value)}
             className="border p-2 w-full"
           />
-          <button onClick={() => handleDelete(section.id)} className="text-red-500 mt-2">Delete</button>
+          <button onClick={() => handleDelete(section.id)} className="text-red-500 cursor-pointer mt-2">Delete</button>
         </div>
       ))}
-      <button onClick={handleAdd} className="bg-gray-200 px-4 py-2 rounded mr-2">+ Add Section</button>
-      <button onClick={handleSave} className="bg-blue-500 text-white px-4 py-2 rounded">Save</button>
+      <button onClick={handleAdd} className="bg-gray-200 cursor-pointer px-4 py-2 rounded mr-2">+ Add Section</button>
+      <button onClick={handleSave} className="bg-blue-500 cursor-pointer text-white px-4 py-2 rounded">Save</button>
     </div>
   );
 }
