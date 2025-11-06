@@ -78,9 +78,21 @@ export async function PATCH(req: Request) {
         if (!recruiter?.company)
             return NextResponse.json({ error: "Company not found" }, { status: 404 });
 
-        const updateData = Object.fromEntries(
+        const updateData: { name?: string; slug?: string; description?: string } = Object.fromEntries(
             Object.entries(body).filter(([_, value]) => value !== undefined)
         );
+        if (updateData.slug && updateData.slug !== recruiter.company.slug) {
+            const slugExists = await prisma.company.findUnique({
+                where: { slug: updateData.slug },
+            });
+
+            if (slugExists) {
+                return NextResponse.json(
+                    { error: "Slug already in use. Please choose another." },
+                    { status: 400 }
+                );
+            }
+        }
 
         const updatedCompany = await prisma.company.update({
             where: { id: recruiter.company.id },
