@@ -40,6 +40,7 @@ export default function CareersPage({ params }: any) {
     const [company, setCompany] = useState<Company | null>(null);
     const [loading, setLoading] = useState(true);
     const [images, setImages] = useState<{ urls: { regular: string } }[]>([]);
+    const [sectionImages, setSectionImages] = useState<{ [key: string]: string | null }>({});
     const [search, setSearch] = useState("");
     const [filters, setFilters] = useState({
         work_policy: "",
@@ -69,7 +70,16 @@ export default function CareersPage({ params }: any) {
         };
         fetchImages();
     }, []);
-
+    useEffect(() => {
+        if (company && images.length > 0) {
+            const mapping: { [key: string]: string | null } = {};
+            company.sections.forEach((sec) => {
+                const random = images[Math.floor(Math.random() * images.length)];
+                mapping[sec.id] = random ? random.urls.regular : null;
+            });
+            setSectionImages(mapping);
+        }
+    }, [company, images]);
     if (loading)
         return (
             <div className="min-h-screen flex items-center justify-center text-gray-500 text-lg">
@@ -124,10 +134,7 @@ export default function CareersPage({ params }: any) {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-16 py-12 space-y-20">
                 {sections?.map((sec, index) => {
-                    const randomImage =
-                        images.length > 0
-                            ? images[Math.floor(Math.random() * images.length)]?.urls.regular
-                            : null;
+                    const randomImage = sectionImages[sec.id];
 
                     const isReversed = index % 2 === 1;
                     const bgColor = index % 2 === 0 ? "bg-[#F2F0EF]" : "bg-white";
